@@ -1,1 +1,13 @@
 @import 'reset';
+@import 'bulma';
+
+
+.item {
+  width: auto;
+  display: inline-block;
+  background-color: whitesmoke;
+
+  & p {
+    padding: 1rem 0;
+  }
+}

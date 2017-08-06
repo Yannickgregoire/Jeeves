@@ -44,7 +44,7 @@ Feed.prototype = {
         return true;
       }
     })[ 0 ];
-    
+
   }
 
 }
