@@ -20,6 +20,7 @@ System.config({
     "feedparser": "npm:feedparser@2.2.1",
     "isomorphic-fetch": "npm:isomorphic-fetch@2.2.1",
     "jquery": "npm:jquery@3.2.1",
+    "js-cookie": "github:js-cookie/js-cookie@2.1.4",
     "mustache": "github:janl/mustache.js@2.3.0",
     "request": "npm:request@2.81.0",
     "xml-js": "npm:xml-js@1.3.2",

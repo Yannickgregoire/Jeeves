@@ -22,10 +22,7 @@ Feed.prototype = {
 
       }).then( function ( text ) {
 
-        let data = convert.xml2js(text, {
-          compact: true
-        })
-
+        let data = convert.xml2js(text, { compact: true })
         let items = this.parseItems( data );
 
         this.items = items;
@@ -37,7 +34,17 @@ Feed.prototype = {
   },
 
   parseItems: function ( data ) {
-    return data.rss.channel.item;
+    return data.rss.channel.item.reverse( );
+  },
+
+  getNextItemForDate: function ( date ) {
+
+    return this.items.filter( function ( item ) {
+      if (Date.parse( item.pubDate._text ) > Date.parse( date )) {
+        return true;
+      }
+    })[ 0 ];
+    
   }
 
 }
