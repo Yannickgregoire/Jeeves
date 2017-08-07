@@ -16,15 +16,9 @@ app.get( '/', function ( req, res ) {
     response.on( 'data', function ( chunk ) {
       i++;
       body += chunk;
-      console.log( 'BODY Part: ' + i );
     });
     response.on( 'end', function ( ) {
-
-      console.log( body );
-      console.log( 'Finished' );
-
       res.send( body );
-
     });
   });
 

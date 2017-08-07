@@ -3,11 +3,47 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Jeeves</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
+  <div class="container chat">
+    <div class="columns is-centered chat">
+      <div class="column is-half">
+
+        <div class="items"></div>
+
+        <div class="column item-container item-container--bot">
+          <div class="notification item is-typing">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="options">
+    <div class="columns is-centered">
+      <div class="column is-half">
+
+        <div class="columns is-centered is-mobile">
+          <div class="column buttons">
+            <a class="button is-info button-read">😲 Vertel me meer</a>
+            <a class="button is-info rainbow button-next">Volgende</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
   <script src="./js/bundle.js"></script>
 </body>
 

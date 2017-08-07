@@ -1,15 +1,18 @@
 {
-  "name": "waiter",
+  "name": "jeeves",
   "version": "0.1.0",
   "scripts": {
-    "build": "npm run build:js && npm run build:css && npm run build:html && npm run build:img",
+    "build": "npm run build:js && npm run build:css && npm run build:html && npm run build:templates && npm run build:img",
     "build:js": "jspm bundle-sfx src/js/App.js dist/js/bundle.js",
     "build:css": "node-sass src/css/style.scss dist/css/style.css",
     "build:html": "cp src/dist.html dist/index.html",
+    "build:templates": "cp -R src/templates dist/templates",
     "build:img": "cp -R src/img dist/img",
+    "clean": "rimraf dist/*",
     "dev": "parallelshell \"serve\" \"npm run dev:css\" \"node server.js\"",
     "dev:serve": "serve",
-    "dev:css": "node-sass --watch src/css/style.scss src/css/style.css"
+    "dev:css": "node-sass --watch src/css/style.scss src/css/style.css",
+    "prebuild": "npm run clean -s"
   },
   "devDependencies": {
     "jspm": "^0.16.53",

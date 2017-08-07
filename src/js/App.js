@@ -3,9 +3,17 @@ import mustache from 'mustache';
 import Feed from './Feed.js';
 import cookie from 'js-cookie';
 
+let delay = 2000;
+
 function App( ) {
   this.feed;
   this.item;
+
+  this.$buttonRead = $( '.button-read' );
+  this.$buttonNext = $( '.button-next' );
+  this.$buttonRefresh = $( '.button-refresh' );
+  this.$isTyping = $( '.is-typing' );
+  this.$options = $( '.options' );
 };
 
 App.prototype = {
@@ -13,6 +21,18 @@ App.prototype = {
   init: function ( ) {
 
     this.feed = new Feed( );
+
+    this.bindDomHandlers( );
+
+    this.renderMessage( 'Yo! 🎉. Hier is het laatste nieuws.', 'bot' );
+
+    setTimeout( function ( ) {
+      this.fetchItems( );
+    }.bind( this ), delay)
+
+  },
+
+  fetchItems: function ( ) {
 
     this.feed.fetchItems( 'http://localhost:3000' ).then( function ( items ) {
 
@@ -26,17 +46,34 @@ App.prototype = {
       console.log( error );
     }.bind( this ));
 
-    this.bindDomHandlers( )
-
   },
 
   bindDomHandlers: function ( ) {
-    $( '.button-next' ).click( function ( ) {
-      this.getItem( );
-    }.bind( this ))
-    $( '.button-read' ).click( function ( ) {
-      this.getItemDescription( );
-    }.bind( this ))
+
+    this.$buttonNext.click( function ( ) {
+      this.renderMessage( this.$buttonNext.html( ), 'me' );
+      this.$buttonRead.removeClass( 'hidden' );
+
+      setTimeout( function ( ) {
+        this.getItem( );
+      }.bind( this ), 500)
+
+    }.bind( this ));
+
+    this.$buttonRead.click( function ( ) {
+      this.renderMessage( this.$buttonRead.html( ), 'me' );
+      this.$buttonRead.addClass( 'hidden' );
+
+      setTimeout( function ( ) {
+        this.getItemDescription( );
+      }.bind( this ), 500)
+
+    }.bind( this ));
+
+    this.$buttonRefresh.click( function ( ) {
+      this.fetchItems( );
+    }.bind( this ));
+
   },
 
   getItem( ) {
@@ -45,26 +82,48 @@ App.prototype = {
     this.item = item;
 
     if ( item ) {
-      this.renderMessage( item.title._cdata );
+      this.renderMessage( item.title._cdata, 'bot' );
       cookie.set( 'latest', item.pubDate._text );
     } else {
-      this.renderMessage( 'You\'re all caught up 🎉. Check back later.' );
+      this.renderMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
     }
 
   },
 
   getItemDescription: function ( ) {
-    this.renderMessage( this.item.description._cdata );
+    this.renderMessage( this.item.description._cdata, 'bot' );
   },
 
-  renderMessage: function ( data ) {
+  renderMessage: function ( data, sender ) {
 
-    $.get( 'templates/item.html', function ( template ) {
-      var rendered = mustache.render(template, { data: data });
-      $( '.items' ).append( rendered );
-      window.scrollTo(0,document.body.scrollHeight);
-    });
+    let timeout = 0;
+    if ( sender === 'bot' ) {
+      timeout = delay;
+      this.$isTyping.removeClass( 'hidden' );
+    } else {
+      this.$isTyping.addClass( 'hidden' );
+    }
 
+    this.scrollToTop( );
+
+    setTimeout( function ( ) {
+      $.get( 'templates/item.html', function ( template ) {
+        var rendered = mustache.render(template, {
+          data: data,
+          sender: sender
+        });
+
+        this.$isTyping.addClass( 'hidden' );
+        $( '.items' ).append( rendered );
+        this.scrollToTop( );
+
+      }.bind( this ));
+    }.bind( this ), timeout)
+
+  },
+
+  scrollToTop: function ( ) {
+    window.scrollTo( 0, document.body.scrollHeight );
   }
 
 }
