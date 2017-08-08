@@ -3,7 +3,10 @@ import mustache from 'mustache';
 import Feed from './Feed.js';
 import cookie from 'js-cookie';
 
-let delay = 2000;
+let messageDelay = 2000;
+let optionsDelay = 500;
+
+let optionsTimeout;
 
 function App( ) {
   this.feed;
@@ -24,11 +27,11 @@ App.prototype = {
 
     this.bindDomHandlers( );
 
-    this.renderMessage( 'Yo! 🎉. Hier is het laatste nieuws.', 'bot' );
+    this.addMessage( 'Yo! 🎉. Hier is het laatste nieuws.', 'bot' );
 
     setTimeout( function ( ) {
       this.fetchItems( );
-    }.bind( this ), delay)
+    }.bind( this ), messageDelay)
 
   },
 
@@ -37,7 +40,7 @@ App.prototype = {
     this.feed.fetchItems( 'http://localhost:3000' ).then( function ( items ) {
 
       if (!cookie.get( 'latest' )) {
-        cookie.set( 'latest', this.feed.items[0].pubDate._text );
+        cookie.set( 'latest', this.feed.items[0].date );
       }
 
       this.getItem( );
@@ -51,6 +54,7 @@ App.prototype = {
   bindDomHandlers: function ( ) {
 
     this.$buttonNext.click( function ( ) {
+      this.hideOptions( );
       this.renderMessage( this.$buttonNext.html( ), 'me' );
       this.$buttonRead.removeClass( 'hidden' );
 
@@ -61,11 +65,12 @@ App.prototype = {
     }.bind( this ));
 
     this.$buttonRead.click( function ( ) {
+      this.hideOptions( );
       this.renderMessage( this.$buttonRead.html( ), 'me' );
       this.$buttonRead.addClass( 'hidden' );
 
       setTimeout( function ( ) {
-        this.getItemDescription( );
+        this.getItemDescription( this.item );
       }.bind( this ), 500)
 
     }.bind( this ));
@@ -82,47 +87,78 @@ App.prototype = {
     this.item = item;
 
     if ( item ) {
-      this.renderMessage( item.title._cdata, 'bot' );
-      cookie.set( 'latest', item.pubDate._text );
+      this.addMessage( item.title, 'bot' );
+      cookie.set( 'latest', item.date );
     } else {
-      this.renderMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
+      this.addMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
     }
 
   },
 
-  getItemDescription: function ( ) {
-    this.renderMessage( this.item.description._cdata, 'bot' );
+  getItemDescription: function ( item ) {
+
+    let index = 0;
+    for ( var value of item.description ) {
+      setTimeout(( function ( index ) {
+        return function ( ) {
+          this.addMessage( item.description[index], 'bot' )
+        }.bind( this )
+      }.bind( this ))( index ), index * ( messageDelay + optionsDelay ));
+      index++;
+    }
+
+  },
+
+  addMessage: function ( data, sender ) {
+
+    this.startTypingIndicator( );
+    this.hideOptions( );
+    this.scrollToBottom( );
+
+    setTimeout( function ( ) {
+      this.renderMessage( data, sender )
+      this.stopTypingIndicator( );
+      this.showOptions( );
+    }.bind( this ), messageDelay)
+
   },
 
   renderMessage: function ( data, sender ) {
 
-    let timeout = 0;
-    if ( sender === 'bot' ) {
-      timeout = delay;
-      this.$isTyping.removeClass( 'hidden' );
-    } else {
-      this.$isTyping.addClass( 'hidden' );
-    }
+    $.get( 'templates/item.html', function ( template ) {
+      var rendered = mustache.render(template, {
+        data: data,
+        sender: sender
+      });
 
-    this.scrollToTop( );
+      $( '.items' ).append( rendered );
+      this.scrollToBottom( );
 
-    setTimeout( function ( ) {
-      $.get( 'templates/item.html', function ( template ) {
-        var rendered = mustache.render(template, {
-          data: data,
-          sender: sender
-        });
-
-        this.$isTyping.addClass( 'hidden' );
-        $( '.items' ).append( rendered );
-        this.scrollToTop( );
-
-      }.bind( this ));
-    }.bind( this ), timeout)
+    }.bind( this ));
 
   },
 
-  scrollToTop: function ( ) {
+  startTypingIndicator: function ( ) {
+    this.$isTyping.removeClass( 'hidden' );
+    this.scrollToBottom( );
+  },
+
+  stopTypingIndicator: function ( ) {
+    this.$isTyping.addClass( 'hidden' );
+    this.scrollToBottom( );
+  },
+
+  hideOptions: function ( ) {
+    clearTimeout( optionsTimeout );
+    this.$options.addClass( 'hidden' );
+  },
+  showOptions: function ( ) {
+    optionsTimeout = setTimeout( function ( ) {
+      this.$options.removeClass( 'hidden' );
+    }.bind( this ), optionsDelay)
+  },
+
+  scrollToBottom: function ( ) {
     window.scrollTo( 0, document.body.scrollHeight );
   }
 
