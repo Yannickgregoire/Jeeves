@@ -23,6 +23,7 @@ System.config({
     "js-cookie": "github:js-cookie/js-cookie@2.1.4",
     "mustache": "github:janl/mustache.js@2.3.0",
     "request": "npm:request@2.81.0",
+    "whatwg-fetch": "npm:whatwg-fetch@2.0.3",
     "xml-js": "npm:xml-js@1.3.2",
     "xml2json": "npm:xml2json@0.11.0",
     "github:jspm/nodelibs-assert@0.1.0": {
