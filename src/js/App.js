@@ -8,20 +8,24 @@ let optionsDelay = 500;
 
 let optionsTimeout;
 
-function App( ) {
-  this.feed;
-  this.item;
+class App {
 
-  this.$buttonRead = $( '.button-read' );
-  this.$buttonNext = $( '.button-next' );
-  this.$buttonRefresh = $( '.button-refresh' );
-  this.$isTyping = $( '.is-typing' );
-  this.$options = $( '.options' );
-};
+  constructor( ) {
 
-App.prototype = {
+    this.feed;
+    this.item;
 
-  init: function ( ) {
+    this.$buttonRead = $( '.button-read' );
+    this.$buttonNext = $( '.button-next' );
+    this.$buttonRefresh = $( '.button-refresh' );
+    this.$isTyping = $( '.is-typing' );
+    this.$options = $( '.options' );
+
+    this.init( );
+
+  }
+
+  init( ) {
 
     this.feed = new Feed( );
 
@@ -29,13 +33,13 @@ App.prototype = {
 
     this.addMessage( 'Yo! 🎉. Hier is het laatste nieuws.', 'bot' );
 
-    setTimeout( function ( ) {
+    setTimeout( ( ) => {
       this.fetchItems( );
-    }.bind( this ), messageDelay)
+    }.bind( this ), messageDelay )
 
-  },
+  }
 
-  fetchItems: function ( ) {
+  fetchItems( ) {
 
     this.feed.fetchItems( location.protocol + '//' + location.hostname + ':3000' ).then( function ( items ) {
 
@@ -49,37 +53,37 @@ App.prototype = {
       console.log( error );
     }.bind( this ));
 
-  },
+  }
 
-  bindDomHandlers: function ( ) {
+  bindDomHandlers( ) {
 
-    this.$buttonNext.click( function ( ) {
+    this.$buttonNext.click(( ) => {
       this.hideOptions( );
       this.renderMessage( this.$buttonNext.html( ), 'me' );
       this.$buttonRead.removeClass( 'hidden' );
 
-      setTimeout( function ( ) {
+      setTimeout( ( ) => {
         this.getItem( );
-      }.bind( this ), 500)
+      }, 500 )
 
-    }.bind( this ));
+    });
 
-    this.$buttonRead.click( function ( ) {
+    this.$buttonRead.click(( ) => {
       this.hideOptions( );
       this.renderMessage( this.$buttonRead.html( ), 'me' );
       this.$buttonRead.addClass( 'hidden' );
 
-      setTimeout( function ( ) {
+      setTimeout( ( ) => {
         this.getItemDescription( this.item );
-      }.bind( this ), 500)
+      }, 500 )
 
-    }.bind( this ));
+    });
 
-    this.$buttonRefresh.click( function ( ) {
+    this.$buttonRefresh.click(( ) => {
       this.fetchItems( );
-    }.bind( this ));
+    });
 
-  },
+  }
 
   getItem( ) {
 
@@ -93,39 +97,39 @@ App.prototype = {
       this.addMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
     }
 
-  },
+  }
 
-  getItemDescription: function ( item ) {
+  getItemDescription( item ) {
 
     let index = 0;
     for ( var value of item.description ) {
-      setTimeout(( function ( index ) {
-        return function ( ) {
+      setTimeout((( index ) => {
+        return ( ) => {
           this.addMessage( item.description[index], 'bot' )
-        }.bind( this )
-      }.bind( this ))( index ), index * ( messageDelay + optionsDelay ));
+        }
+      })( index ), index * ( messageDelay + optionsDelay ));
       index++;
     }
 
-  },
+  }
 
-  addMessage: function ( data, sender ) {
+  addMessage( data, sender ) {
 
     this.startTypingIndicator( );
     this.hideOptions( );
     this.scrollToBottom( );
 
-    setTimeout( function ( ) {
+    setTimeout( ( ) => {
       this.renderMessage( data, sender )
       this.stopTypingIndicator( );
       this.showOptions( );
-    }.bind( this ), messageDelay)
+    }, messageDelay )
 
-  },
+  }
 
-  renderMessage: function ( data, sender ) {
+  renderMessage( data, sender ) {
 
-    $.get( 'templates/item.html', function ( template ) {
+    $.get('templates/item.html', ( template ) => {
       var rendered = mustache.render(template, {
         data: data,
         sender: sender
@@ -134,35 +138,35 @@ App.prototype = {
       $( '.items' ).append( rendered );
       this.scrollToBottom( );
 
-    }.bind( this ));
+    });
 
-  },
+  }
 
-  startTypingIndicator: function ( ) {
+  startTypingIndicator( ) {
     this.$isTyping.removeClass( 'hidden' );
     this.scrollToBottom( );
-  },
+  }
 
-  stopTypingIndicator: function ( ) {
+  stopTypingIndicator( ) {
     this.$isTyping.addClass( 'hidden' );
     this.scrollToBottom( );
-  },
+  }
 
-  hideOptions: function ( ) {
+  hideOptions( ) {
     clearTimeout( optionsTimeout );
     this.$options.addClass( 'hidden' );
-  },
-  showOptions: function ( ) {
-    optionsTimeout = setTimeout( function ( ) {
-      this.$options.removeClass( 'hidden' );
-    }.bind( this ), optionsDelay)
-  },
+  }
 
-  scrollToBottom: function ( ) {
+  showOptions( ) {
+    optionsTimeout = setTimeout( ( ) => {
+      this.$options.removeClass( 'hidden' );
+    }, optionsDelay )
+  }
+
+  scrollToBottom( ) {
     window.scrollTo( 0, document.body.scrollHeight );
   }
 
-}
+};
 
 let app = new App( );
-app.init( );
