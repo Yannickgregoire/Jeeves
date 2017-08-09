@@ -37,7 +37,7 @@ App.prototype = {
 
   fetchItems: function ( ) {
 
-    this.feed.fetchItems( 'http://localhost:3000' ).then( function ( items ) {
+    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':3000' ).then( function ( items ) {
 
       if (!cookie.get( 'latest' )) {
         cookie.set( 'latest', this.feed.items[0].date );

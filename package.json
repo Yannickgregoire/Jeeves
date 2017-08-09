@@ -14,10 +14,11 @@
     "dev:css": "node-sass --watch src/css/style.scss src/css/style.css",
     "prebuild": "npm run clean -s"
   },
+  "dependencies": {
+    "express": "^4.15.4"
+  },
   "devDependencies": {
-    "jspm": "^0.16.53",
-    "node-sass": "^4.5.3",
-    "parallelshell": "^3.0.1"
+    "jspm": "^0.16.53"
   },
   "jspm": {
     "dependencies": {
@@ -35,8 +36,5 @@
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
     }
-  },
-  "dependencies": {
-    "express": "^4.15.3"
   }
 }
