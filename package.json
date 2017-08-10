@@ -23,6 +23,7 @@
   "jspm": {
     "dependencies": {
       "feedparser": "npm:feedparser@^2.2.1",
+      "giphy": "npm:giphy@^0.0.4",
       "isomorphic-fetch": "npm:isomorphic-fetch@^2.2.1",
       "jquery": "npm:jquery@^3.2.1",
       "js-cookie": "github:js-cookie/js-cookie@^2.1.4",

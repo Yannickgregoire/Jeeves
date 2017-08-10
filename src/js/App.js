@@ -47,7 +47,7 @@ class App {
         cookie.set( 'latest', this.feed.items[0].date );
       }
 
-      this.getItem( );
+      this.addItem( );
 
     }.bind( this ), function ( error ) {
       console.log( error );
@@ -63,7 +63,7 @@ class App {
       this.$buttonRead.removeClass( 'hidden' );
 
       setTimeout( ( ) => {
-        this.getItem( );
+        this.addItem( );
       }, 500 )
 
     });
@@ -74,7 +74,7 @@ class App {
       this.$buttonRead.addClass( 'hidden' );
 
       setTimeout( ( ) => {
-        this.getItemDescription( this.item );
+        this.addItemDescription( this.item );
       }, 500 )
 
     });
@@ -85,7 +85,7 @@ class App {
 
   }
 
-  getItem( ) {
+  addItem( ) {
 
     let item = this.feed.getNextItemForDate(cookie.get( 'latest' ));
     this.item = item;
@@ -99,8 +99,8 @@ class App {
 
   }
 
-  getItemDescription( item ) {
-
+  addItemDescription( item ) {
+    
     let index = 0;
     for ( var value of item.description ) {
       setTimeout((( index ) => {
@@ -121,7 +121,6 @@ class App {
 
     setTimeout( ( ) => {
       this.renderMessage( data, sender )
-      this.stopTypingIndicator( );
       this.showOptions( );
     }, messageDelay )
 
@@ -136,6 +135,7 @@ class App {
       });
 
       $( '.items' ).append( rendered );
+      this.stopTypingIndicator( );
       this.scrollToBottom( );
 
     });
@@ -144,12 +144,10 @@ class App {
 
   startTypingIndicator( ) {
     this.$isTyping.removeClass( 'hidden' );
-    this.scrollToBottom( );
   }
 
   stopTypingIndicator( ) {
     this.$isTyping.addClass( 'hidden' );
-    this.scrollToBottom( );
   }
 
   hideOptions( ) {
@@ -164,7 +162,9 @@ class App {
   }
 
   scrollToBottom( ) {
-    window.scrollTo( 0, document.body.scrollHeight );
+    $( 'html, body' ).animate({
+      scrollTop: document.body.scrollHeight - window.innerHeight
+    });
   }
 
 };
