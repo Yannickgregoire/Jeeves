@@ -27,11 +27,14 @@ class App {
 
   init( ) {
 
+    // allow "hover" states on elements with -webkit-tap-highlight-color
+    document.addEventListener( 'touchstart', ( ) => {}, true );
+
     this.feed = new Feed( );
 
     this.bindDomHandlers( );
 
-    this.addMessage( 'Yo! 🎉. Hier is het laatste nieuws.', 'bot' );
+    this.addMessage( 'Yo! 🙌. Hier is het laatste nieuws.', 'bot' );
 
     setTimeout( ( ) => {
       this.fetchItems( );
@@ -57,7 +60,7 @@ class App {
 
   bindDomHandlers( ) {
 
-    this.$buttonNext.click(( ) => {
+    this.$buttonNext.on('click touch', ( ) => {
 
       this.hideOptions( );
       this.renderMessage( this.$buttonNext.html( ), 'me' );
@@ -68,7 +71,7 @@ class App {
 
     });
 
-    this.$buttonRead.click(( ) => {
+    this.$buttonRead.on('click touch', ( ) => {
 
       this.hideOptions( );
       this.renderMessage( this.$buttonRead.html( ), 'me' );
@@ -79,7 +82,7 @@ class App {
 
     });
 
-    this.$buttonRefresh.click(( ) => {
+    this.$buttonRefresh.on('click touch', ( ) => {
 
       this.hideOptions( );
       this.renderMessage( this.$buttonRefresh.html( ), 'me' );
@@ -101,7 +104,7 @@ class App {
       this.addMessage(item.title, 'bot', [ 'read', 'next' ]);
       cookie.set( 'latest', item.date );
     } else {
-      this.addMessage('Dat was \'m voor nu! 🙌. Kom later terug.', 'bot', [ 'refresh' ]);
+      this.addMessage('Dat was \'m voor nu! 🤘. Kom later terug.', 'bot', [ 'refresh' ]);
     }
 
   }
@@ -141,9 +144,7 @@ class App {
         sender: sender
       });
 
-      $( '.items' ).append( rendered ).ready(  ( ) =>
-        $( '.items .item:last-child' ).removeClass( 'hidden' )
-      );
+      $( '.items' ).append( rendered ).ready(( ) => $( '.items .item:last-child' ).removeClass( 'hidden' ));
 
       this.stopTypingIndicator( );
       this.scrollToBottom( );
