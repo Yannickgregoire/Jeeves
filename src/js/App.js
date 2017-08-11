@@ -47,7 +47,7 @@ class App {
         cookie.set( 'latest', this.feed.items[0].date );
       }
 
-      this.getItem( );
+      this.addItem( );
 
     }.bind( this ), function ( error ) {
       console.log( error );
@@ -58,54 +58,61 @@ class App {
   bindDomHandlers( ) {
 
     this.$buttonNext.click(( ) => {
+
       this.hideOptions( );
       this.renderMessage( this.$buttonNext.html( ), 'me' );
-      this.$buttonRead.removeClass( 'hidden' );
 
       setTimeout( ( ) => {
-        this.getItem( );
-      }, 500 )
+        this.addItem( );
+      }, optionsDelay )
 
     });
 
     this.$buttonRead.click(( ) => {
+
       this.hideOptions( );
       this.renderMessage( this.$buttonRead.html( ), 'me' );
-      this.$buttonRead.addClass( 'hidden' );
 
       setTimeout( ( ) => {
-        this.getItemDescription( this.item );
-      }, 500 )
+        this.addItemDescription( this.item );
+      }, optionsDelay )
 
     });
 
     this.$buttonRefresh.click(( ) => {
-      this.fetchItems( );
+
+      this.hideOptions( );
+      this.renderMessage( this.$buttonRefresh.html( ), 'me' );
+
+      setTimeout( ( ) => {
+        this.fetchItems( );
+      }, optionsDelay )
+
     });
 
   }
 
-  getItem( ) {
+  addItem( ) {
 
     let item = this.feed.getNextItemForDate(cookie.get( 'latest' ));
     this.item = item;
 
     if ( item ) {
-      this.addMessage( item.title, 'bot' );
+      this.addMessage(item.title, 'bot', [ 'read', 'next' ]);
       cookie.set( 'latest', item.date );
     } else {
-      this.addMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
+      this.addMessage('Dat was \'m voor nu! 🙌. Kom later terug.', 'bot', [ 'refresh' ]);
     }
 
   }
 
-  getItemDescription( item ) {
+  addItemDescription( item ) {
 
     let index = 0;
     for ( var value of item.description ) {
       setTimeout((( index ) => {
         return ( ) => {
-          this.addMessage( item.description[index], 'bot' )
+          this.addMessage(item.description[index], 'bot', [ 'next' ])
         }
       })( index ), index * ( messageDelay + optionsDelay ));
       index++;
@@ -113,7 +120,7 @@ class App {
 
   }
 
-  addMessage( data, sender ) {
+  addMessage( data, sender, options ) {
 
     this.startTypingIndicator( );
     this.hideOptions( );
@@ -121,8 +128,7 @@ class App {
 
     setTimeout( ( ) => {
       this.renderMessage( data, sender )
-      this.stopTypingIndicator( );
-      this.showOptions( );
+      this.showOptions( options );
     }, messageDelay )
 
   }
@@ -135,7 +141,11 @@ class App {
         sender: sender
       });
 
-      $( '.items' ).append( rendered );
+      $( '.items' ).append( rendered ).ready(  ( ) =>
+        $( '.items .item:last-child' ).removeClass( 'hidden' )
+      );
+
+      this.stopTypingIndicator( );
       this.scrollToBottom( );
 
     });
@@ -144,12 +154,10 @@ class App {
 
   startTypingIndicator( ) {
     this.$isTyping.removeClass( 'hidden' );
-    this.scrollToBottom( );
   }
 
   stopTypingIndicator( ) {
     this.$isTyping.addClass( 'hidden' );
-    this.scrollToBottom( );
   }
 
   hideOptions( ) {
@@ -157,14 +165,39 @@ class App {
     this.$options.addClass( 'hidden' );
   }
 
-  showOptions( ) {
+  showOptions( options ) {
+
+    this.$buttonRead.addClass( 'hidden' );
+    this.$buttonNext.addClass( 'hidden' );
+    this.$buttonRefresh.addClass( 'hidden' );
+
+    if ( options ) {
+      for ( let option of options ) {
+
+        switch ( option ) {
+          case 'read':
+            this.$buttonRead.removeClass( 'hidden' );
+            break;
+          case 'next':
+            this.$buttonNext.removeClass( 'hidden' );
+            break;
+          case 'refresh':
+            this.$buttonRefresh.removeClass( 'hidden' );
+            break;
+        }
+      }
+    }
+
     optionsTimeout = setTimeout( ( ) => {
       this.$options.removeClass( 'hidden' );
     }, optionsDelay )
+
   }
 
   scrollToBottom( ) {
-    window.scrollTo( 0, document.body.scrollHeight );
+    $( 'html, body' ).animate({
+      scrollTop: document.body.scrollHeight - window.innerHeight
+    });
   }
 
 };

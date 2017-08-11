@@ -1,5 +1,5 @@
 import convert from 'xml-js';
-import 'whatwg-fetch'; 
+import 'whatwg-fetch';
 
 class Feed {
 
@@ -23,7 +23,6 @@ class Feed {
 
         let data = convert.xml2js(text, { compact: true })
         let items = this.parseItems( data );
-
         this.items = items;
         resolve( items );
 
@@ -44,7 +43,7 @@ class Feed {
   }
 
   splitDescription( description ) {
-    return description.match( /<p>(.*?)<\/p>/g ).map(value => value.replace( '<p>', '' ).replace( '</p>', '' ))
+    return description.match( /<p>(.*?)<\/p>/g ).map(value => value.replace( '<p>', '' ).replace( '</p>', '' )).slice( 0, 3 );
   }
 
   getNextItemForDate( date ) {
