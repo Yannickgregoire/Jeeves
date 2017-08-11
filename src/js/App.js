@@ -58,29 +58,36 @@ class App {
   bindDomHandlers( ) {
 
     this.$buttonNext.click(( ) => {
+
       this.hideOptions( );
       this.renderMessage( this.$buttonNext.html( ), 'me' );
-      this.$buttonRead.removeClass( 'hidden' );
 
       setTimeout( ( ) => {
         this.addItem( );
-      }, 500 )
+      }, optionsDelay )
 
     });
 
     this.$buttonRead.click(( ) => {
+
       this.hideOptions( );
       this.renderMessage( this.$buttonRead.html( ), 'me' );
-      this.$buttonRead.addClass( 'hidden' );
 
       setTimeout( ( ) => {
         this.addItemDescription( this.item );
-      }, 500 )
+      }, optionsDelay )
 
     });
 
     this.$buttonRefresh.click(( ) => {
-      this.fetchItems( );
+
+      this.hideOptions( );
+      this.renderMessage( this.$buttonRefresh.html( ), 'me' );
+
+      setTimeout( ( ) => {
+        this.fetchItems( );
+      }, optionsDelay )
+
     });
 
   }
@@ -91,21 +98,21 @@ class App {
     this.item = item;
 
     if ( item ) {
-      this.addMessage( item.title, 'bot' );
+      this.addMessage(item.title, 'bot', [ 'read', 'next' ]);
       cookie.set( 'latest', item.date );
     } else {
-      this.addMessage( 'Dat was \'m voor nu! 🙌. Kom later terug.', 'bot' );
+      this.addMessage('Dat was \'m voor nu! 🙌. Kom later terug.', 'bot', [ 'refresh' ]);
     }
 
   }
 
   addItemDescription( item ) {
-    
+
     let index = 0;
     for ( var value of item.description ) {
       setTimeout((( index ) => {
         return ( ) => {
-          this.addMessage( item.description[index], 'bot' )
+          this.addMessage(item.description[index], 'bot', [ 'next' ])
         }
       })( index ), index * ( messageDelay + optionsDelay ));
       index++;
@@ -113,7 +120,7 @@ class App {
 
   }
 
-  addMessage( data, sender ) {
+  addMessage( data, sender, options ) {
 
     this.startTypingIndicator( );
     this.hideOptions( );
@@ -121,7 +128,7 @@ class App {
 
     setTimeout( ( ) => {
       this.renderMessage( data, sender )
-      this.showOptions( );
+      this.showOptions( options );
     }, messageDelay )
 
   }
@@ -134,7 +141,10 @@ class App {
         sender: sender
       });
 
-      $( '.items' ).append( rendered );
+      $( '.items' ).append( rendered ).ready(  ( ) =>
+        $( '.items .item:last-child' ).removeClass( 'hidden' )
+      );
+
       this.stopTypingIndicator( );
       this.scrollToBottom( );
 
@@ -155,10 +165,33 @@ class App {
     this.$options.addClass( 'hidden' );
   }
 
-  showOptions( ) {
+  showOptions( options ) {
+
+    this.$buttonRead.addClass( 'hidden' );
+    this.$buttonNext.addClass( 'hidden' );
+    this.$buttonRefresh.addClass( 'hidden' );
+
+    if ( options ) {
+      for ( let option of options ) {
+
+        switch ( option ) {
+          case 'read':
+            this.$buttonRead.removeClass( 'hidden' );
+            break;
+          case 'next':
+            this.$buttonNext.removeClass( 'hidden' );
+            break;
+          case 'refresh':
+            this.$buttonRefresh.removeClass( 'hidden' );
+            break;
+        }
+      }
+    }
+
     optionsTimeout = setTimeout( ( ) => {
       this.$options.removeClass( 'hidden' );
     }, optionsDelay )
+
   }
 
   scrollToBottom( ) {

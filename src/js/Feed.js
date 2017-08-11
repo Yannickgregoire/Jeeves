@@ -23,7 +23,6 @@ class Feed {
 
         let data = convert.xml2js(text, { compact: true })
         let items = this.parseItems( data );
-
         this.items = items;
         resolve( items );
 
