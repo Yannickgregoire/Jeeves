@@ -1,0 +1,24 @@
+.container {
+  position: relative;
+  margin: 0 auto;
+  padding: 1rem;
+  overflow-x: hidden;
+}
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 504px;
+    width: 504px;
+  }
+}
+@media screen and (min-width: 1224px) {
+  .container {
+    max-width: 612px;
+    width: 612px;
+  }
+}
+@media screen and (min-width: 1392px) {
+  .container {
+    max-width: 696px;
+    width: 696px;
+  }
+}
