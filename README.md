@@ -10,7 +10,7 @@ Install Serve `npm i -g serve`.
 Install Parallelshell `npm i -g parallelshell`.
 Install Node-sass `npm i -g node-sass`.
 
-Run `npm run:dev`. This starts a proxy server for http://feeds.nos.nl/nosnieuwsalgemeen?format=xml on `localhost:3000` and runs the app on `localhost:5000/src/`.
+Run `npm run dev`. This starts a proxy server for http://feeds.nos.nl/nosnieuwsalgemeen?format=xml on `localhost:3000` and runs the app on `localhost:5000/src/`.
 
 ## Production
-Run `npm run:build`. Builds files into the `dist` folder.
+Run `npm run build`. Builds files into the `dist` folder.
