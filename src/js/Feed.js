@@ -7,27 +7,16 @@ class Feed {
     this.items = [ ];
   }
 
-  fetchItems( url ) {
+  async fetchItems( url ) {
 
-    return new Promise(( resolve, reject ) => {
+      const response = await fetch(url, { 'Access-Control-Allow-Origin': '*' })
+      const text = await response.text()
 
-      let request = fetch(url, { 'Access-Control-Allow-Origin': '*' }).then(( response ) => {
+      const data = convert.xml2js(text, { compact: true })
+      const items = this.parseItems( data );
+      this.items = items;
+      return items;
 
-        if ( response.ok ) {
-          return response.text( );
-        } else {
-          reject( false );
-        }
-
-      }).then(( text ) => {
-
-        let data = convert.xml2js(text, { compact: true })
-        let items = this.parseItems( data );
-        this.items = items;
-        resolve( items );
-
-      });
-    })
   }
 
   parseItems( data ) {
@@ -48,7 +37,7 @@ class Feed {
 
   getNextItemForDate( date ) {
     return this.items.filter(( item ) => {
-      if (Date.parse( item.date ) > Date.parse( date )) {
+      if (Date.parse( item.date ) >  date ) {
         return true;
       }
     })[ 0 ];
