@@ -3,8 +3,8 @@ import mustache from 'mustache';
 import Feed from './Feed.js';
 import cookie from 'js-cookie';
 
-let messageDelay = 2000;
-let optionsDelay = 500;
+const messageDelay = 2000;
+const optionsDelay = 500;
 
 let optionsTimeout;
 
@@ -27,7 +27,6 @@ class App {
 
   init( ) {
 
-    // allow "hover" states on elements with -webkit-tap-highlight-color
     document.addEventListener( 'touchstart', ( ) => {}, true );
 
     this.feed = new Feed( );
@@ -44,17 +43,19 @@ class App {
 
   fetchItems( ) {
 
-    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':3000' ).then( function ( items ) {
+    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':3000' ).then(( items ) => {
 
       if (!cookie.get( 'latest' )) {
-        cookie.set( 'latest', this.feed.items[0].date );
+        cookie.set('latest', Date.parse( this.feed.items[0].date ));
       }
+
+      cookie.set('fetched', Date.now( ));
 
       this.addItem( );
 
-    }.bind( this ), function ( error ) {
+    }, ( error ) => {
       console.log( error );
-    }.bind( this ));
+    });
 
   }
 
@@ -66,7 +67,13 @@ class App {
       this.renderMessage( this.$buttonNext.html( ), 'me' );
 
       setTimeout( ( ) => {
-        this.addItem( );
+
+        if ( Date.now( ) - cookie.get( 'fetched' ) > 2 * 1000 * 60 * 60 ) {
+          this.fetchItems( );
+        } else {
+          this.addItem( );
+        }
+
       }, optionsDelay )
 
     });
@@ -97,12 +104,12 @@ class App {
 
   addItem( ) {
 
-    let item = this.feed.getNextItemForDate(cookie.get( 'latest' ));
+    const item = this.feed.getNextItemForDate(cookie.get( 'latest' ));
     this.item = item;
 
     if ( item ) {
       this.addMessage(item.title, 'bot', [ 'read', 'next' ]);
-      cookie.set( 'latest', item.date );
+      cookie.set('latest', Date.parse( item.date ));
     } else {
       this.addMessage('Dat was \'m voor nu! 🤘. Kom later terug.', 'bot', [ 'refresh' ]);
     }
@@ -112,7 +119,7 @@ class App {
   addItemDescription( item ) {
 
     let index = 0;
-    for ( var value of item.description ) {
+    for ( const paragraph of item.description ) {
       setTimeout((( index ) => {
         return ( ) => {
           this.addMessage(item.description[index], 'bot', [ 'next' ])
@@ -139,7 +146,7 @@ class App {
   renderMessage( data, sender ) {
 
     $.get('templates/item.html', ( template ) => {
-      var rendered = mustache.render(template, {
+      const rendered = mustache.render(template, {
         data: data,
         sender: sender
       });
@@ -173,7 +180,7 @@ class App {
     this.$buttonRefresh.addClass( 'hidden' );
 
     if ( options ) {
-      for ( let option of options ) {
+      for ( const option of options ) {
 
         switch ( option ) {
           case 'read':
@@ -185,6 +192,7 @@ class App {
           case 'refresh':
             this.$buttonRefresh.removeClass( 'hidden' );
             break;
+
         }
       }
     }
@@ -203,4 +211,4 @@ class App {
 
 };
 
-let app = new App( );
+const app = new App( );
