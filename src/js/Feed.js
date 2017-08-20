@@ -9,18 +9,18 @@ class Feed {
 
   async fetchItems( url ) {
 
-      const response = await fetch(url, { 'Access-Control-Allow-Origin': '*' })
-      const text = await response.text()
+    const response = await fetch(url, { 'Access-Control-Allow-Origin': '*' })
+    const text = await response.text( )
 
-      const data = convert.xml2js(text, { compact: true })
-      const items = this.parseItems( data );
-      this.items = items;
-      return items;
+    const data = convert.xml2js(text, { compact: true })
+    const items = this.parseItems( data );
+    this.items = items;
+    return items;
 
   }
 
   parseItems( data ) {
-    return data.rss.channel.item.reverse( ).map(( item ) => {
+    return data.rss.channel.item.reverse( ).map(item => {
       return {
         title: item.title._cdata,
         description: this.splitDescription( item.description._cdata ),
@@ -28,7 +28,7 @@ class Feed {
         image: item.enclosure._attributes.url,
         link: item.link._text
       }
-    });
+    }).filter( item => return Date.parse( item.date ) > Date.now( ) - 4 * 1000 * 60 * 60; );
   }
 
   splitDescription( description ) {
@@ -37,7 +37,7 @@ class Feed {
 
   getNextItemForDate( date ) {
     return this.items.filter(( item ) => {
-      if (Date.parse( item.date ) >  date ) {
+      if ( Date.parse( item.date ) > date ) {
         return true;
       }
     })[ 0 ];
