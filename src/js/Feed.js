@@ -28,7 +28,7 @@ class Feed {
         image: item.enclosure._attributes.url,
         link: item.link._text
       }
-    }).filter( item => return Date.parse( item.date ) > Date.now( ) - 4 * 1000 * 60 * 60; );
+    }).filter( item => Date.parse( item.date ) > Date.now( ) - 4 * 1000 * 60 * 60 );
   }
 
   splitDescription( description ) {
@@ -36,7 +36,7 @@ class Feed {
   }
 
   getNextItemForDate( date ) {
-    return this.items.filter(( item ) => {
+    return this.items.filter(item => {
       if ( Date.parse( item.date ) > date ) {
         return true;
       }
