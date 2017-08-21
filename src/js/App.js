@@ -43,7 +43,7 @@ class App {
 
   fetchItems( ) {
 
-    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':3000' ).then(( items ) => {
+    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':' + 5000 + '/feed/' ).then(( items ) => {
 
       if (!cookie.get( 'latest' )) {
         cookie.set('latest', Date.parse( this.feed.items[0].date ));
