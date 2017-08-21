@@ -9,8 +9,7 @@
     "build:templates": "cp -R src/templates dist/templates",
     "build:img": "cp -R src/img dist/img",
     "clean": "rimraf dist/*",
-    "dev": "parallelshell \"serve\" \"npm run dev:css\" \"node server.js\"",
-    "dev:serve": "serve",
+    "dev": "parallelshell \"serve -p 5001\" \"npm run dev:css\" \"node server.js\"",
     "dev:css": "node-sass --watch src/css/style.scss src/css/style.css",
     "prebuild": "npm run clean -s"
   },
