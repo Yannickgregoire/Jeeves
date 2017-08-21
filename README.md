@@ -1,6 +1,6 @@
 # Jeeves
 Bot for serving news from NOS.
-Currently deployed on [https://jeevesjeeves.herokuapp.com/](Heroku)
+Currently deployed on [Heroku](https://jeevesjeeves.herokuapp.com/)
 
 ## Install
 Make sure you have JSPM installed: `npm i -g jspm`.
