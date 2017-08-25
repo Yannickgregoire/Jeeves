@@ -5,6 +5,7 @@ import cookie from 'js-cookie';
 
 const messageDelay = 2000;
 const optionsDelay = 500;
+const scrollMargin = 400;
 
 let optionsTimeout;
 
@@ -43,18 +44,19 @@ class App {
 
   fetchItems( ) {
 
-    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':' + 5000 + '/feed/' ).then(( items ) => {
+    this.feed.fetchItems( location.protocol + '//' + location.hostname + ':' + 5000 + '/feed/' ).then(items => {
 
       if (!cookie.get( 'latest' )) {
         cookie.set('latest', Date.parse( this.feed.items[0].date ));
       }
 
       cookie.set('fetched', Date.now( ));
+      this.feed.preloadImages( items ).then(( ) => {
+        this.addItem( );
+      })
 
-      this.addItem( );
-
-    }, ( error ) => {
-      console.log( error );
+    }, error => {
+      this.addMessage('Lame, we kunnen de feed van NOS Nieuws blijkbaar niet bereiken. Probeer het zo nog eens, hopelijk lukt het dan wel.', 'bot', [ 'refresh' ]);
     });
 
   }
@@ -118,13 +120,19 @@ class App {
 
   addItemDescription( item ) {
 
+    const imageDelay = messageDelay + optionsDelay + optionsDelay;
+
+    setTimeout(( ) => {
+      this.addMessage( '<img src="' + item.image + '" />', 'bot-image' )
+    }, ( optionsDelay ));
+
     let index = 0;
     for ( const paragraph of item.description ) {
-      setTimeout((( index ) => {
+      setTimeout((index => {
         return ( ) => {
           this.addMessage(item.description[index], 'bot', [ 'next' ])
         }
-      })( index ), index * ( messageDelay + optionsDelay ));
+      })( index ), index * ( messageDelay + optionsDelay ) + imageDelay);
       index++;
     }
 
@@ -145,7 +153,7 @@ class App {
 
   renderMessage( data, sender ) {
 
-    $.get('templates/item.html', ( template ) => {
+    $.get('templates/item.html', template => {
       const rendered = mustache.render(template, {
         data: data,
         sender: sender
@@ -155,7 +163,6 @@ class App {
 
       this.stopTypingIndicator( );
       this.scrollToBottom( );
-
     });
 
   }
@@ -204,9 +211,11 @@ class App {
   }
 
   scrollToBottom( ) {
-    $( 'html, body' ).animate({
-      scrollTop: document.body.scrollHeight - window.innerHeight
-    });
+    if ( $( window ).scrollTop( ) + $( window ).height( ) > $( document ).height( ) - scrollMargin ) {
+      $( 'html, body' ).animate({
+        scrollTop: $( document ).height( ) - $( window ).height( )
+      });
+    }
   }
 
 };

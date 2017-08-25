@@ -1,4 +1,5 @@
 import convert from 'xml-js';
+import preloader from 'preloader';
 import 'whatwg-fetch';
 
 class Feed {
@@ -22,13 +23,35 @@ class Feed {
   parseItems( data ) {
     return data.rss.channel.item.reverse( ).map(item => {
       return {
-        title: item.title._cdata,
-        description: this.splitDescription( item.description._cdata ),
-        date: item.pubDate._text,
-        image: item.enclosure._attributes.url,
-        link: item.link._text
+        title: ( item.title )
+          ? item.title._cdata
+          : '',
+        description: ( item.description )
+          ? this.splitDescription( item.description._cdata )
+          : [],
+        date: ( item.pubDate )
+          ? item.pubDate._text
+          : '',
+        image: ( item.enclosure )
+          ? item.enclosure._attributes.url
+          : '',
+        link: ( item.link )
+          ? item.link._text
+          : ''
       }
     }).filter( item => Date.parse( item.date ) > Date.now( ) - 4 * 1000 * 60 * 60 );
+  }
+
+  preloadImages( items ) {
+
+    const loader = preloader({ xhrImages: false });
+    items.map(item => loader.addImage( item.image ))
+
+    return new Promise(( resolve, reject ) => {
+      loader.on( 'complete', resolve );
+      loader.load( )
+    });
+
   }
 
   splitDescription( description ) {
