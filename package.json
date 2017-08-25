@@ -9,10 +9,15 @@
     "build:templates": "cp -R src/templates dist/templates",
     "build:img": "cp -R src/img dist/img",
     "clean": "rimraf dist/*",
-    "dev": "parallelshell \"serve -p 5001\" \"npm run dev:css\" \"node server.js\"",
+    "dev": "parallelshell \"node server\" \"npm run dev:css\"",
     "dev:css": "node-sass --watch src/css/style.scss src/css/style.css",
-    "prebuild": "npm run clean -s"
+    "prebuild": "npm run clean -s",
+    "start": "node server.js"
   },
+  "engines": {
+    "node": "8.1.2"
+  },
+  "main": "server.js",
   "dependencies": {
     "express": "^4.15.4"
   },
@@ -27,6 +32,7 @@
       "jquery": "npm:jquery@^3.2.1",
       "js-cookie": "github:js-cookie/js-cookie@^2.1.4",
       "mustache": "github:janl/mustache.js@^2.3.0",
+      "preloader": "npm:preloader@^4.0.2",
       "request": "npm:request@^2.81.0",
       "whatwg-fetch": "npm:whatwg-fetch@^2.0.3",
       "xml-js": "npm:xml-js@^1.3.2",

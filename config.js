@@ -12,6 +12,7 @@ System.config({
     "github:*": "jspm_packages/github/*",
     "npm:*": "jspm_packages/npm/*"
   },
+
   map: {
     "babel": "npm:babel-core@5.8.38",
     "babel-runtime": "npm:babel-runtime@5.8.38",
@@ -22,6 +23,7 @@ System.config({
     "jquery": "npm:jquery@3.2.1",
     "js-cookie": "github:js-cookie/js-cookie@2.1.4",
     "mustache": "github:janl/mustache.js@2.3.0",
+    "preloader": "npm:preloader@4.0.2",
     "request": "npm:request@2.81.0",
     "whatwg-fetch": "npm:whatwg-fetch@2.0.3",
     "xml-js": "npm:xml-js@1.3.2",
@@ -585,6 +587,9 @@ System.config({
       "process": "github:jspm/nodelibs-process@0.1.2",
       "topo": "npm:topo@2.0.2"
     },
+    "npm:js-oop@1.0.0": {
+      "fs": "github:jspm/nodelibs-fs@0.1.2"
+    },
     "npm:json-stable-stringify@1.0.1": {
       "jsonify": "npm:jsonify@0.0.0"
     },
@@ -690,6 +695,13 @@ System.config({
       "sha.js": "npm:sha.js@2.4.8"
     },
     "npm:performance-now@0.2.0": {
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
+    "npm:preloader@4.0.2": {
+      "base64mime": "npm:base64mime@0.0.3",
+      "buffer": "github:jspm/nodelibs-buffer@0.1.1",
+      "events": "github:jspm/nodelibs-events@0.1.1",
+      "js-oop": "npm:js-oop@1.0.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:process-nextick-args@1.0.7": {

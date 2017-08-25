@@ -170,21 +170,26 @@ body {
       border-bottom-right-radius: 8px; }
       .item-container.item-container--me .item.hidden {
         transform: translateX(50px); }
-  .item-container.item-container--bot {
+  .item-container.item-container--bot, .item-container.item-container--bot-image {
     text-align: left; }
-    .item-container.item-container--bot .item {
+    .item-container.item-container--bot .item, .item-container.item-container--bot-image .item {
       background-color: whitesmoke;
       border-bottom-left-radius: 8px; }
-      .item-container.item-container--bot .item.hidden {
+      .item-container.item-container--bot .item.hidden, .item-container.item-container--bot-image .item.hidden {
         transform: translateX(-50px); }
 
 .item {
   display: inline-block;
   width: auto;
-  padding: 1rem 1.125rem;
+  padding: 0.75rem 1rem;
   border-radius: 24px;
   transform: translateX(0);
-  transition: transform 2000ms cubic-bezier(0, 1.005, 0.22, 1); }
+  transition: transform 2000ms cubic-bezier(0, 1.005, 0.22, 1);
+  overflow: hidden; }
+  .item-container--bot-image .item {
+    padding: 0;
+    line-height: 0;
+    max-width: 200px; }
   .item.is-typing {
     padding: 1.25rem 1rem 1rem;
     text-align: center; }

@@ -10,7 +10,12 @@ app.use(( req, res, next ) => {
   next( );
 });
 
-app.use(express.static( 'dist' ))
+if ( process.env.NODE_ENV === 'production' ) {
+  app.use(express.static( 'dist' ));
+} if ( process.env.NODE_ENV === 'development' ) else {
+  app.use(express.static( './' ));
+  app.use(express.static( 'src' ));
+}
 
 app.get('/feed/', ( req, res ) => {
 
